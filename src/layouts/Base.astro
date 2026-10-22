@@ -1,0 +1,203 @@
+---
+// The shared page frame: <head>, fonts, header with navigation, and footer.
+// Every page wraps its content in <Base title="..."> ... </Base>.
+import '../styles/global.css';
+import { NAV, PHONE, PHONE_LINK, EMAIL, EMAIL_LINK } from '../data/site.js';
+
+const {
+  title = 'Lexen Construction | Exceptional home renovations',
+  description = 'Kitchens, bathrooms and full home renovations across Vancouver and the Lower Mainland, from a family-owned team with 15 years and over 100 projects behind it.',
+} = Astro.props;
+
+// Which page are we on? Used to highlight the current nav link.
+const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/png" href="/lexen/logo.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Cormorant+Garamond:ital,wght@0,500;1,500&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container header-inner">
+        <a href="/" class="logo-link">
+          <img src="/lexen/logo.png" alt="Lexen Construction" width="90" height="58" />
+        </a>
+
+        <!-- Only visible on small phones (see the 560px rule below). -->
+        <button class="menu-button" type="button" aria-expanded="false" aria-controls="site-nav">
+          Menu
+        </button>
+
+        <nav id="site-nav" class="site-nav" aria-label="Main">
+          {
+            NAV.map((item) => (
+              <a
+                href={item.href}
+                class:list={{ active: currentPath === item.href }}
+                aria-current={currentPath === item.href ? 'page' : undefined}
+              >
+                {item.label}
+              </a>
+            ))
+          }
+        </nav>
+      </div>
+    </header>
+
+    <slot />
+
+    <footer class="site-footer">
+      <div class="container footer-inner">
+        <span class="copyright">© 2026 Lexen Construction Ltd.</span>
+        <div class="footer-links">
+          <a href={PHONE_LINK}>{PHONE}</a>
+          <a href={EMAIL_LINK}>{EMAIL}</a>
+        </div>
+      </div>
+    </footer>
+
+    <script is:inline>
+      // Mobile menu: show/hide the nav links when "Menu" is tapped.
+      {
+        const menuButton = document.querySelector('.menu-button');
+        const siteNav = document.getElementById('site-nav');
+        menuButton.addEventListener('click', () => {
+          const isOpen = siteNav.classList.toggle('open');
+          menuButton.setAttribute('aria-expanded', String(isOpen));
+          menuButton.textContent = isOpen ? 'Close' : 'Menu';
+        });
+      }
+    </script>
+  </body>
+</html>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: var(--stone);
+    border-bottom: 1px solid var(--line-soft);
+  }
+
+  .header-inner {
+    height: 92px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+  }
+
+  .logo-link img {
+    height: 58px;
+    width: auto;
+  }
+
+  .site-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: clamp(16px, 2.4vw, 36px);
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .site-nav a {
+    color: var(--slate);
+    text-decoration: none;
+  }
+
+  .site-nav a:hover,
+  .site-nav a.active {
+    color: var(--ink);
+  }
+
+  .menu-button {
+    display: none;
+    background: none;
+    border: 1px solid var(--ink);
+    color: var(--ink);
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 10px 16px;
+    cursor: pointer;
+  }
+
+  /* Small phones: the three links don't fit beside the logo, so they
+     collapse into a "Menu" button that opens a dropdown panel. */
+  @media (max-width: 559px) {
+    .menu-button {
+      display: block;
+    }
+
+    .site-nav {
+      display: none;
+      position: absolute;
+      top: 92px;
+      left: 0;
+      right: 0;
+      flex-direction: column;
+      gap: 0;
+      background: var(--stone);
+      border-top: 1px solid var(--line-soft);
+      border-bottom: 1px solid var(--line-soft);
+      padding: 8px var(--gutter) 16px;
+    }
+
+    .site-nav.open {
+      display: flex;
+    }
+
+    .site-nav a {
+      padding: 12px 0;
+    }
+  }
+
+  .site-footer {
+    background: var(--ink);
+    color: var(--on-dark);
+  }
+
+  .footer-inner {
+    padding-top: 40px;
+    padding-bottom: 40px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 16px 32px;
+    font-size: 16px;
+  }
+
+  .copyright {
+    color: var(--stone);
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .footer-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+  }
+
+  .footer-links a {
+    color: var(--stone);
+    text-decoration: none;
+  }
+</style>

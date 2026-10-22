@@ -1,0 +1,111 @@
+---
+// About page ( /about )
+import Base from '../layouts/Base.astro';
+import { TEAM } from '../data/team.js';
+---
+
+<Base title="About | Lexen Construction">
+  <main>
+    <section class="container auto-grid-wide intro">
+      <h1 class="display">Lexen <em>Construction.</em></h1>
+      <div class="intro-text">
+        <p class="lead">We’re a family-owned and operated company that’s been in business for 15 years. With over 100 projects completed, we proudly say our expertise is in home renovations.</p>
+        <p class="lead">We have an understanding of the intricacies of each trade, which allows us to oversee and manage a high quality of work and offer creative problem-solving solutions to meet our clients’ needs.</p>
+      </div>
+    </section>
+
+    <section class="dark">
+      <div class="container auto-grid team">
+        {
+          TEAM.map((person) => (
+            <div class="person">
+              <div class="person-photo">
+                <img src={person.photo} alt={person.name} />
+              </div>
+              <span class="label person-role">{person.role}</span>
+              <h2 class="display">{person.name}</h2>
+              <p>{person.bio}</p>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+
+    <section class="container cta">
+      <h2 class="display">Create your <em>dream home.</em></h2>
+      <a href="/contact" class="btn btn-solid">Tell us about your project</a>
+    </section>
+  </main>
+</Base>
+
+<style>
+  .intro {
+    padding-top: var(--page-top);
+    padding-bottom: var(--page-top);
+    gap: 48px 96px;
+    align-items: end;
+  }
+
+  .intro h1 {
+    font-size: clamp(56px, 7vw, 120px);
+    line-height: 0.95;
+  }
+
+  .intro-text {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  .team {
+    padding-top: var(--section-y);
+    padding-bottom: var(--section-y);
+    gap: 56px 96px;
+  }
+
+  .person {
+    border-top: 1px solid var(--slate);
+    padding-top: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  /* 4:5 portrait photo */
+  .person-photo {
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+    background: var(--photo-on-dark);
+    max-width: 420px;
+    width: 100%;
+    margin-bottom: 12px;
+  }
+
+  .person-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 20%;
+  }
+
+  .person-role {
+    color: var(--label-on-dark);
+  }
+
+  .person h2 {
+    font-size: clamp(44px, 4.6vw, 72px);
+    line-height: 1;
+  }
+
+  .person p {
+    margin: 0;
+    font-size: 18px;
+    color: var(--on-dark);
+    max-width: 32em;
+  }
+
+  /* This page's closing heading is a touch smaller than the Home one. */
+  .cta h2 {
+    font-size: clamp(48px, 6vw, 100px);
+  }
+</style>
